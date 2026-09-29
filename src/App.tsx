@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 import { SideBar } from "./components/SideBar"
 import { Dashboard } from "./pages/Dashboard"
+import { Serviços } from "./pages/Serviços"
 
 
 function App() {
@@ -12,7 +13,7 @@ function App() {
         <Routes>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/clientes" element={<h1 className="text-2xl font-bold text-gray-800">Sobre Nós</h1>} />
-          <Route path="/servicos" element={<h1 className="text-2xl font-bold text-gray-800">Serviços</h1>} />
+          <Route path="/servicos" element={<Serviços />} />
           <Route path="/orcamentos" element={<h1 className="text-2xl font-bold text-gray-800">Orçamentos</h1>} />
           <Route path="/relatorios" element={<h1 className="text-2xl font-bold text-gray-800">Relatórios</h1>} />
           <Route path="/configuracoes" element={<h1 className="text-2xl font-bold text-gray-800">Configurações</h1>} />

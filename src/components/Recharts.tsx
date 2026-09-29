@@ -19,9 +19,7 @@ const dados: AnalyticsData[] = [
 
 export function Recharts() {
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 w-lg h-screen ml-64">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Dashboard</h1>
-      <p>Visão geral do seu negócio</p>
+    <div className="bg-white p-6 rounded-2xl border border-gray-100 w-full h-full ">
       <h2 className="text-lg font-bold text-gray-800 mb-4">Desempenho Semestral</h2>
       
       {/* ResponsiveContainer garante que o gráfico se ajuste ao tamanho da div pai */}
