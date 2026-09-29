@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export function SideBar() {
   return (
-    <nav className="fixed top-0 left-0 w-64 h-screen 
+    <nav className=" w-64 h-screen 
      bg-gray-800 text-white p-4">
       <ul className="flex flex-col space-y-4">
         <li>
