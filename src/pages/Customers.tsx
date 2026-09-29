@@ -1,10 +1,10 @@
-import { Table } from "@/components/ui/table"
+import { InvoiceTableExample } from "@/components/TableCustomers"
+
 
 export function Customers() {
   return (
-    <div className="bg-gray-900 h-screen w-screen flex items-center justify-center    ">
-      <Table />
-       
+    <div className="w-screen">
+      <InvoiceTableExample />
     </div>
   )
 }
