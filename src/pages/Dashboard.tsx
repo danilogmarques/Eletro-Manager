@@ -4,7 +4,7 @@ import { CardService } from "@/components/CardService";
 
 export function Dashboard() { 
   return (
-    <div className="flex flex-col bg-gray-100 p-4">
+    <div className="flex flex-col w-full bg-gray-100 p-4">
       <header className="flex flex-col p-4">
         <h1 className="text-2xl font-bold">Dashboard</h1>
         <p className="text-muted-foreground">Visão geral do seu negócio</p>
