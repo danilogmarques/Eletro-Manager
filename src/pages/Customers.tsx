@@ -1,10 +1,10 @@
-import { InvoiceTableExample } from "@/components/TableCustomers"
+import { CustomersTable } from "@/components/CustomersTable"
 
 
 export function Customers() {
   return (
     <div className="w-screen">
-      <InvoiceTableExample />
+      <CustomersTable />
     </div>
   )
 }
