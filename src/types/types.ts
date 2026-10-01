@@ -10,10 +10,24 @@ export interface Customer {
 }
 
 export interface Orcamento {
-  id: string;      
-  client: string;   
-  service: string;  
-  price: number;    
-  status: boolean;  
-  data: string; 
+  id: string;
+  client: string;
+  service: string;
+  price: number;
+  status: boolean;
+  data: string;
 };
+
+export interface Service {
+  id: string;
+  name: string;
+  category: string;
+  price: number;
+  status: 'Available' | 'Unavailable';
+}
+
+export interface AnalyticsData {
+  mes: string;
+  acessos: number;
+  conversoes: number;
+}

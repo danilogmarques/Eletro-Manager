@@ -1,9 +1,8 @@
 import { InvoiceTable } from "@/components/InvoiceTable"
 
-
 export function Customers() {
   return (
-    <div className="w-screen">
+    <div className="w-full">
       <InvoiceTable />
     </div>
   )

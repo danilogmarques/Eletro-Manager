@@ -3,7 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "./ui/card"
 type CardProps = {
     name: string;
     services?: "instalação" | "manutenção" | "reparo";
-    status?: "em andamento" | "concluído" | "pendente";
+    status?: "aprovado" | "aguardando";
 };
 
 export function CardService({ name, services, status }: CardProps) {
@@ -16,7 +16,7 @@ export function CardService({ name, services, status }: CardProps) {
 
             <CardContent className="space-y-2">
                 <p className="text-sm font-medium text-slate-900">
-                    {name} {services} {status}
+                    {name} · {services} · {status}
                 </p>
             </CardContent>
 
