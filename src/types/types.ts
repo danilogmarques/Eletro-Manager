@@ -8,3 +8,12 @@ export interface Customer {
   status: CustomerStatus;
   actions: string[]; 
 }
+
+export interface Orcamento {
+  id: string;      
+  client: string;   
+  service: string;  
+  price: number;    
+  status: boolean;  
+  data: string; 
+};

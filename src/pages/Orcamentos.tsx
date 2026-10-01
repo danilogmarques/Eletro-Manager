@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Plus, Search, FileText, CheckCircle, Clock, MoreVertical } from "lucide-react";
 
+// Importações dos componentes nativos do shadcn/ui
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,7 +15,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-export function InvoiceTable() {
+export function Orcamentos() {
+  // Dados fictícios simulados
   const [orcamentos] = useState([
     { id: "ORC-001", cliente: "João Silva", servico: "Manutenção de Ar", valor: 350.00, status: "Aprovado", data: "12/05/2026" },
     { id: "ORC-002", cliente: "Maria Oliveira", servico: "Instalação Elétrica", valor: 1200.00, status: "Pendente", data: "14/05/2026" },
@@ -22,6 +24,7 @@ export function InvoiceTable() {
     { id: "ORC-004", cliente: "Carlos Souza", servico: "Reparo Hidráulico", valor: 180.00, status: "Cancelado", data: "16/05/2026" },
   ]);
 
+  // Função utilitária para renderizar as cores das Badges do shadcn de forma condicional
   const getStatusBadge = (status) => {
     const styles = {
       Aprovado: "bg-green-100 text-green-800 hover:bg-green-100 border-transparent",
@@ -34,6 +37,7 @@ export function InvoiceTable() {
   return (
     <div className="p-6 space-y-6 bg-background min-h-screen w-full">
       
+      {/* Cabeçalho */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Orçamentos</h1>
@@ -45,6 +49,7 @@ export function InvoiceTable() {
         </Button>
       </div>
 
+      {/* Cards de Resumo usando Card do shadcn */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card shadow="sm">
           <CardContent className="flex items-center gap-4 p-6">
@@ -83,6 +88,7 @@ export function InvoiceTable() {
         </Card>
       </div>
 
+      {/* Barra de Filtro e Tabela */}
       <Card className="overflow-hidden">
         <CardHeader className="px-6 py-4 border-b">
           <div className="relative w-full md:w-80">
@@ -95,6 +101,7 @@ export function InvoiceTable() {
           </div>
         </CardHeader>
         
+        {/* Tabela do shadcn */}
         <Table>
           <TableHeader>
             <TableRow>
@@ -118,7 +125,7 @@ export function InvoiceTable() {
                 </TableCell>
                 <TableCell className="text-muted-foreground">{orcamento.data}</TableCell>
                 <TableCell>
-        
+                  {/* Utilizando o Badge do shadcn com estilização condicional */}
                   <Badge variant="outline" className={getStatusBadge(orcamento.status)}>
                     {orcamento.status}
                   </Badge>

@@ -4,6 +4,7 @@ import { Dashboard } from "./pages/Dashboard"
 import Customers from "./pages/Customers"
 import Serviços from"./pages/Serviços"
 import Relatórios from "./pages/Relatórios"
+import { Orcamentos } from "./pages/Orcamentos"
 
 
 function App() {
@@ -16,7 +17,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/clientes" element={<Customers />} />
           <Route path="/servicos" element={<Serviços />} />
-          <Route path="/orcamentos" element={<h1 className="text-2xl font-bold text-gray-800">Orçamentos</h1>} />
+          <Route path="/orcamentos" element={<Orcamentos />} />
           <Route path="/relatorios" element={<Relatórios />} />
           <Route path="/configuracoes" element={<h1 className="text-2xl font-bold text-gray-800">Configurações</h1>} />
         </Routes>
