@@ -1,5 +1,18 @@
 # React + Vite
 
+## Lumina Gestão
+
+Execute `npm install` e `npm run dev` para iniciar o painel. O login demonstrativo usa `eletricista@lumina.com` e `eletrica2026`; ele não substitui autenticação real e não deve ser usado em produção.
+
+Sem configuração, os módulos usam os dados compartilhados em `src/mocks/orcamentosMock.ts` e `src/mocks/appDataMock.ts`. Para conectar uma API, defina `VITE_API_URL` no ambiente do Vite. O adaptador em `src/services/dataService.ts` espera respostas JSON em:
+
+- `GET /orcamentos`
+- `GET /clientes`
+- `GET /servicos`
+- `GET /relatorios/analytics`
+
+As respostas devem seguir os tipos de `src/types/types.ts`. As páginas consomem a interface `DataService`, permitindo trocar o adaptador sem alterar os componentes.
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
