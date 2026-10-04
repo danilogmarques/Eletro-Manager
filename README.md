@@ -13,6 +13,8 @@ Sem configuração, os módulos usam os dados compartilhados em `src/mocks/orcam
 
 As respostas devem seguir os tipos de `src/types/types.ts`. As páginas consomem a interface `DataService`, permitindo trocar o adaptador sem alterar os componentes.
 
+O menu **Ordens de serviço** permite cadastrar e acompanhar ordens pelo dashboard. Por enquanto, essas ordens são armazenadas no `localStorage` do navegador; a API ainda não oferece endpoints para criá-las nem compartilhá-las com o app mobile.
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:

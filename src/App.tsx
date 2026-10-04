@@ -8,6 +8,7 @@ import Relatórios from "./pages/Relatórios"
 import { Orcamentos } from "./pages/Orcamentos"
 import { Login } from "./pages/Login"
 import Configurações from "./pages/Configurações"
+import { OrdensServico } from "./pages/OrdensServico"
 
 function App() {
   const [authenticated, setAuthenticated] = useState(() => localStorage.getItem('eletricista-session') === 'active')
@@ -28,6 +29,7 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/clientes" element={<Customers />} />
                 <Route path="/servicos" element={<Serviços />} />
+                <Route path="/ordens-servico" element={<OrdensServico />} />
                 <Route path="/orcamentos" element={<Orcamentos />} />
                 <Route path="/relatorios" element={<Relatórios />} />
                 <Route path="/configuracoes" element={<Configurações />} />
