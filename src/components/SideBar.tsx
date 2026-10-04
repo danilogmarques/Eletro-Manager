@@ -6,6 +6,7 @@ import {
   Wrench, 
   FileText, 
   DollarSign, 
+  ClipboardList,
   Settings,
   LogOut,
   Zap,
@@ -17,6 +18,7 @@ export function SideBar({ onLogout }: { onLogout: () => void }) {
     { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/clientes', label: 'Clientes', icon: Users },
     { path: '/servicos', label: 'Serviços', icon: Wrench },
+    { path: '/ordens-servico', label: 'Ordens de serviço', icon: ClipboardList },
     { path: '/orcamentos', label: 'Orçamentos', icon: DollarSign },
     { path: '/relatorios', label: 'Relatórios', icon: FileText },
     { path: '/configuracoes', label: 'Configurações', icon: Settings }

@@ -18,6 +18,20 @@ export interface Orcamento {
   data: string;
 };
 
+export type WorkOrderStatus = 'Agendada' | 'Em andamento' | 'Concluída';
+
+export interface WorkOrder {
+  id: string;
+  customer: string;
+  phone: string;
+  service: string;
+  description: string;
+  address: string;
+  scheduledAt: string;
+  status: WorkOrderStatus;
+  createdAt: string;
+}
+
 export interface Service {
   id: string;
   name: string;
