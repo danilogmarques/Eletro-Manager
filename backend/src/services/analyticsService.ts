@@ -1,21 +1,13 @@
-import { getPool } from '../config/database.js';
-
-interface AnalyticsRow {
-  month: Date;
-  accesses: number;
-  conversions: number;
-}
+import { getPrisma } from '../config/database.js';
 
 const monthLabels = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
 
 async function list() {
-  const result = await getPool().query<AnalyticsRow>(`
-    SELECT month, accesses, conversions
-    FROM monthly_analytics
-    ORDER BY month
-  `);
+  const analytics = await getPrisma().monthlyAnalytics.findMany({
+    orderBy: { month: 'asc' },
+  });
 
-  return result.rows.map((row) => ({
+  return analytics.map((row) => ({
     mes: monthLabels[row.month.getUTCMonth()],
     acessos: row.accesses,
     conversoes: row.conversions,

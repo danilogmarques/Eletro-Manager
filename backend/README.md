@@ -7,12 +7,20 @@ API em Express e TypeScript, organizada em `routes`, `controllers`, `services` e
 ```sh
 npm install
 cp .env.example .env
+npm run db:generate
+npm run db:migrate
 npm run dev
 ```
 
 `GET /api/health` verifica a API. `GET /api/db/health` e os endpoints de dados testam o PostgreSQL via services.
 
-Crie o banco e o usuário no PostgreSQL, configure `DATABASE_URL` no `.env` e aplique o esquema inicial com `psql -d lumina_gestao -f database/schema.sql`. Nunca versione o `.env`. A API inicia sem banco para permitir o desenvolvimento dos endpoints.
+Crie o banco e o usuário no PostgreSQL e configure `DATABASE_URL` no `.env`. O schema e as migrações são gerenciados pelo Prisma em `prisma/schema.prisma` e `prisma/migrations`. Para aplicar migrações existentes em produção, use `npm run db:deploy`. Nunca versione o `.env`. A API pode iniciar sem banco; os endpoints de dados retornam erro até que `DATABASE_URL` esteja configurada.
+
+Se o banco já tiver sido criado com o antigo `database/schema.sql`, faça backup e confira se as tabelas correspondem à migração inicial. Nesse caso, registre a migração como aplicada antes de usar `npm run db:deploy`:
+
+```sh
+npm exec prisma -- migrate resolve --applied 20261006201900_init
+```
 
 ## Endpoints disponíveis
 
@@ -27,6 +35,5 @@ Os endpoints de dados são somente leitura por enquanto. Erros da API e rotas in
 
 ## Próximos passos
 
-- Adicionar scripts de migração e seeds para substituir os mocks.
 - Implementar operações de criação, edição e remoção.
 - Adicionar autenticação real antes de disponibilizar o sistema.

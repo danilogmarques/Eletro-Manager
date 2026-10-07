@@ -1,20 +1,12 @@
-import { Pool } from 'pg';
+import { PrismaClient } from '@prisma/client';
 import { ApiError } from '../errors/ApiError.js';
 
-const connectionString = process.env.DATABASE_URL;
+export const prisma = new PrismaClient();
 
-export const pool = connectionString
-  ? new Pool({ connectionString })
-  : null;
-
-pool?.on('error', (error) => {
-  console.error('Erro inesperado no pool PostgreSQL:', error.message);
-});
-
-export function getPool(): Pool {
-  if (!pool) {
+export function getPrisma(): PrismaClient {
+  if (!process.env.DATABASE_URL) {
     throw new ApiError(503, 'Banco de dados não configurado');
   }
 
-  return pool;
+  return prisma;
 }

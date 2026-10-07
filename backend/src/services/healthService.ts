@@ -1,7 +1,7 @@
-import { getPool } from '../config/database.js';
+import { getPrisma } from '../config/database.js';
 
 async function checkDatabase(): Promise<void> {
-  await getPool().query('SELECT 1');
+  await getPrisma().$queryRaw`SELECT 1`;
 }
 
 export const healthService = { checkDatabase };

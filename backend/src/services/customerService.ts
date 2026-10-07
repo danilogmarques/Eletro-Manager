@@ -1,33 +1,34 @@
-import { getPool } from '../config/database.js';
+import { getPrisma } from '../config/database.js';
 
 interface CustomerRow {
   id: string;
   name: string;
   phone: string;
   lastService: string;
-  status: 'Active' | 'Inactive' | 'Pending';
+  status: string;
+  actions: never[];
 }
 
 async function list(): Promise<CustomerRow[]> {
-  const result = await getPool().query<CustomerRow>(`
-    SELECT
-      customer.id::text AS id,
-      customer.name,
-      customer.phone,
-      COALESCE((
-        SELECT service.name
-        FROM budgets AS budget
-        JOIN services AS service ON service.id = budget.service_id
-        WHERE budget.customer_id = customer.id
-        ORDER BY budget.created_at DESC
-        LIMIT 1
-      ), '') AS "lastService",
-      customer.status
-    FROM customers AS customer
-    ORDER BY customer.name
-  `);
+  const customers = await getPrisma().customer.findMany({
+    orderBy: { name: 'asc' },
+    include: {
+      budgets: {
+        orderBy: { createdAt: 'desc' },
+        take: 1,
+        include: { service: true },
+      },
+    },
+  });
 
-  return result.rows.map((customer) => ({ ...customer, actions: [] }));
+  return customers.map((customer) => ({
+    id: customer.id,
+    name: customer.name,
+    phone: customer.phone,
+    lastService: customer.budgets[0]?.service.name ?? '',
+    status: customer.status,
+    actions: [],
+  }));
 }
 
 export const customerService = { list };

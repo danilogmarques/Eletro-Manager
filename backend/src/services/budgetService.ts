@@ -1,4 +1,4 @@
-import { getPool } from '../config/database.js';
+import { getPrisma } from '../config/database.js';
 
 interface BudgetRow {
   id: string;
@@ -12,23 +12,21 @@ interface BudgetRow {
 type BudgetResponse = Omit<BudgetRow, 'data'> & { data: string };
 
 async function list(): Promise<BudgetResponse[]> {
-  const result = await getPool().query<BudgetRow>(`
-    SELECT
-      budget.id::text AS id,
-      customer.name AS client,
-      service.name AS service,
-      budget.price::float8 AS price,
-      (budget.status = 'approved') AS status,
-      budget.created_at AS data
-    FROM budgets AS budget
-    JOIN customers AS customer ON customer.id = budget.customer_id
-    JOIN services AS service ON service.id = budget.service_id
-    ORDER BY budget.created_at DESC
-  `);
+  const budgets = await getPrisma().budget.findMany({
+    orderBy: { createdAt: 'desc' },
+    include: {
+      customer: { select: { name: true } },
+      service: { select: { name: true } },
+    },
+  });
 
-  return result.rows.map((budget) => ({
-    ...budget,
-    data: budget.data.toISOString(),
+  return budgets.map((budget) => ({
+    id: budget.id,
+    client: budget.customer.name,
+    service: budget.service.name,
+    price: Number(budget.price),
+    status: budget.status === 'approved',
+    data: budget.createdAt.toISOString(),
   }));
 }
 

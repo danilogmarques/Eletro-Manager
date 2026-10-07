@@ -1,4 +1,4 @@
-import { getPool } from '../config/database.js';
+import { getPrisma } from '../config/database.js';
 
 interface ServiceRow {
   id: string;
@@ -9,18 +9,17 @@ interface ServiceRow {
 }
 
 async function list(): Promise<ServiceRow[]> {
-  const result = await getPool().query<ServiceRow>(`
-    SELECT
-      id::text AS id,
-      name,
-      category,
-      base_price::float8 AS price,
-      CASE WHEN active THEN 'Available' ELSE 'Unavailable' END AS status
-    FROM services
-    ORDER BY name
-  `);
+  const services = await getPrisma().service.findMany({
+    orderBy: { name: 'asc' },
+  });
 
-  return result.rows;
+  return services.map((service) => ({
+    id: service.id,
+    name: service.name,
+    category: service.category,
+    price: Number(service.basePrice),
+    status: service.active ? 'Available' : 'Unavailable',
+  }));
 }
 
 export const serviceService = { list };
