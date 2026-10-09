@@ -1,0 +1,8 @@
+.git
+**/node_modules
+**/dist
+**/.expo
+.env*
+!.env.example
+*.local
+npm-debug.log*

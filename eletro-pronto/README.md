@@ -18,5 +18,11 @@ npm run build
 npm run preview
 ```
 
+Para executar a suíte de testes:
+
+```sh
+npm test
+```
+
 O catálogo e os preços são ilustrativos. O checkout e a newsletter ainda não
 estão conectados a serviços de pagamento, pedidos ou e-mail.

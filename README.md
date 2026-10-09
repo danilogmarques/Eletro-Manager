@@ -4,6 +4,18 @@
 
 Execute `npm install` e `npm run dev` para iniciar o painel. O login demonstrativo usa `eletricista@lumina.com` e `eletrica2026`; ele não substitui autenticação real e não deve ser usado em produção.
 
+## Ambiente local com Docker Compose
+
+Com Docker e o plugin Docker Compose instalados, inicie o dashboard, a API e o PostgreSQL na raiz do projeto:
+
+```sh
+docker compose up --build
+```
+
+Acesse o dashboard em `http://localhost:5173` e a API em `http://localhost:3000/api`. A API aplica as migrações do Prisma quando inicia, após o banco ficar pronto. Os dados do PostgreSQL ficam no volume `postgres_data` e são preservados ao parar os serviços com `docker compose down`.
+
+Para remover também os dados locais do banco, use `docker compose down --volumes`. As credenciais definidas no Compose são apenas para desenvolvimento local; não as reutilize em produção.
+
 Sem configuração, os módulos usam os dados compartilhados em `src/mocks/orcamentosMock.ts` e `src/mocks/appDataMock.ts`. Para conectar uma API, defina `VITE_API_URL` no ambiente do Vite. O adaptador em `src/services/dataService.ts` espera respostas JSON em:
 
 - `GET /orcamentos`
