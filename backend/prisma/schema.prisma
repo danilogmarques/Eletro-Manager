@@ -14,6 +14,7 @@ model Customer {
   status    String
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   budgets   Budget[]
+  workOrders WorkOrder[]
 
   @@map("customers")
 }
@@ -26,6 +27,7 @@ model Service {
   active    Boolean  @default(true)
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   budgets   Budget[]
+  workOrders WorkOrder[]
 
   @@map("services")
 }
@@ -41,6 +43,24 @@ model Budget {
   service    Service  @relation(fields: [serviceId], references: [id])
 
   @@map("budgets")
+}
+
+model WorkOrder {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customerId  String   @map("customer_id") @db.Uuid
+  serviceId   String   @map("service_id") @db.Uuid
+  description String
+  address     String
+  scheduledAt DateTime @map("scheduled_at") @db.Timestamptz(6)
+  status      String   @default("Agendada")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  service     Service  @relation(fields: [serviceId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([customerId])
+  @@index([serviceId])
+  @@index([scheduledAt])
+  @@map("work_orders")
 }
 
 model MonthlyAnalytics {

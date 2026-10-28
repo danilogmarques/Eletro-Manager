@@ -24,16 +24,20 @@ npm exec prisma -- migrate resolve --applied 20261006201900_init
 
 ## Endpoints disponíveis
 
-- `GET /api/clientes`
-- `GET /api/servicos`
-- `GET /api/orcamentos`
+- `GET /api/clientes`, `POST /api/clientes`, `PATCH /api/clientes/:id`, `DELETE /api/clientes/:id`
+- `GET /api/servicos`, `POST /api/servicos`, `PATCH /api/servicos/:id`, `DELETE /api/servicos/:id`
+- `GET /api/orcamentos`, `POST /api/orcamentos`, `PATCH /api/orcamentos/:id`, `DELETE /api/orcamentos/:id`
+- `GET /api/ordens-servico`, `POST /api/ordens-servico`, `PATCH /api/ordens-servico/:id`, `DELETE /api/ordens-servico/:id`
 - `GET /api/relatorios/analytics`
 - `GET /api/health`
 - `GET /api/db/health`
 
-Os endpoints de dados são somente leitura por enquanto. Erros da API e rotas inexistentes são tratados pelos middlewares globais.
+Criação e atualização validam campos, status, valores e identificadores; exclusões que violem vínculos retornam `409 Conflict`. Ordens de serviço são persistidas em `work_orders` e vinculadas a clientes e serviços ativos. A interface continua usando armazenamento local para ordens quando `VITE_API_URL` não estiver configurada.
 
-## Próximos passos
+Após atualizar o código, aplique a nova migração antes de usar ordens de serviço:
 
-- Implementar operações de criação, edição e remoção.
-- Adicionar autenticação real antes de disponibilizar o sistema.
+```sh
+npm run db:deploy
+```
+
+O login da interface continua demonstrativo e não protege os endpoints. Implemente autenticação e autorização antes de disponibilizar a API fora de um ambiente confiável.
