@@ -4,10 +4,9 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAsyncData } from '@/hooks/useAsyncData';
-import { dataService } from '@/services/dataService';
+import { dataService, dataSource } from '@/services/dataService';
 import type { WorkOrder } from '@/types/types';
-
-const STORAGE_KEY = 'lumina-work-orders';
+import type { WorkOrderInput } from '@/services/dataService';
 
 type OrderForm = {
   customerId: string;
@@ -25,45 +24,6 @@ function localDateValue(date: Date) {
   return `${year}-${month}-${day}`;
 }
 
-function isWorkOrder(value: unknown): value is WorkOrder {
-  if (!value || typeof value !== 'object') return false;
-  const order = value as Record<string, unknown>;
-  return (
-    typeof order.id === 'string' &&
-    typeof order.customer === 'string' &&
-    typeof order.phone === 'string' &&
-    typeof order.service === 'string' &&
-    typeof order.description === 'string' &&
-    typeof order.address === 'string' &&
-    typeof order.scheduledAt === 'string' &&
-    typeof order.createdAt === 'string' &&
-    (order.status === 'Agendada' ||
-      order.status === 'Em andamento' ||
-      order.status === 'Concluída')
-  );
-}
-
-function loadOrders(): { orders: WorkOrder[]; error: string } {
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (!stored) return { orders: [], error: '' };
-
-  try {
-    const parsed: unknown = JSON.parse(stored);
-    if (!Array.isArray(parsed) || !parsed.every(isWorkOrder)) {
-      return {
-        orders: [],
-        error: 'Os dados locais das ordens estão inválidos. Crie uma nova ordem para continuar.',
-      };
-    }
-    return { orders: parsed, error: '' };
-  } catch {
-    return {
-      orders: [],
-      error: 'Não foi possível ler as ordens salvas neste navegador.',
-    };
-  }
-}
-
 function formatScheduledAt(value: string) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
@@ -76,9 +36,9 @@ function formatScheduledAt(value: string) {
 export function OrdensServico() {
   const { data: customers, loading: loadingCustomers, error: customersError } = useAsyncData(dataService.listCustomers, []);
   const { data: services, loading: loadingServices, error: servicesError } = useAsyncData(dataService.listServices, []);
-  const [initialState] = useState(loadOrders);
-  const [orders, setOrders] = useState(initialState.orders);
-  const [storageError, setStorageError] = useState(initialState.error);
+  const { data: loadedOrders, loading: loadingOrders, error: ordersError } = useAsyncData(dataService.listWorkOrders, []);
+  const [orders, setOrders] = useState<WorkOrder[] | null>(null);
+  const visibleOrders = orders ?? loadedOrders;
   const [search, setSearch] = useState('');
   const [formOpen, setFormOpen] = useState(false);
   const [formError, setFormError] = useState('');
@@ -94,12 +54,12 @@ export function OrdensServico() {
 
   const filteredOrders = useMemo(
     () =>
-      orders.filter((order) =>
+      visibleOrders.filter((order) =>
         `${order.id} ${order.customer} ${order.service} ${order.address}`
           .toLowerCase()
           .includes(search.trim().toLowerCase()),
       ),
-    [orders, search],
+    [visibleOrders, search],
   );
 
   function updateForm(field: keyof OrderForm, value: string) {
@@ -107,7 +67,7 @@ export function OrdensServico() {
     setFormError('');
   }
 
-  function handleCreate(event: FormEvent<HTMLFormElement>) {
+  async function handleCreate(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setFormError('');
     setSavedMessage('');
@@ -125,38 +85,30 @@ export function OrdensServico() {
       return;
     }
 
-    const order: WorkOrder = {
-      id: `OS-${Date.now().toString().slice(-6)}`,
-      customer: customer.name,
-      phone: customer.phone,
-      service: service.name,
+    const newOrder: WorkOrderInput = {
+      customerId: customer.id,
+      serviceId: service.id,
       description: form.description.trim(),
       address: form.address.trim(),
       scheduledAt: scheduledDate.toISOString(),
-      status: 'Agendada',
-      createdAt: new Date().toISOString(),
     };
-    const nextOrders = [order, ...orders];
-
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(nextOrders));
-    } catch {
-      setFormError('Não foi possível salvar a ordem neste navegador. Verifique o armazenamento disponível.');
+      const order = await dataService.createWorkOrder(newOrder);
+      setOrders((current) => [order, ...(current ?? loadedOrders)]);
+      setForm({
+        customerId: '',
+        serviceId: '',
+        description: '',
+        address: '',
+        date: localDateValue(new Date()),
+        time: '09:00',
+      });
+      setFormOpen(false);
+      setSavedMessage(`${order.id} criada com sucesso.`);
+    } catch (error) {
+      setFormError(error instanceof Error ? error.message : 'Não foi possível salvar a ordem de serviço.');
       return;
     }
-
-    setOrders(nextOrders);
-    setForm({
-      customerId: '',
-      serviceId: '',
-      description: '',
-      address: '',
-      date: localDateValue(new Date()),
-      time: '09:00',
-    });
-    setFormOpen(false);
-    setSavedMessage(`${order.id} criada com sucesso.`);
-    setStorageError('');
   }
 
   return (
@@ -180,19 +132,19 @@ export function OrdensServico() {
       <section className="budget-summary work-order-summary">
         <article className="summary-item">
           <span className="summary-icon"><ClipboardList size={19} /></span>
-          <div><p>Total de ordens</p><strong>{orders.length}</strong></div>
+          <div><p>Total de ordens</p><strong>{visibleOrders.length}</strong></div>
         </article>
         <article className="summary-item">
           <span className="summary-icon summary-icon-amber">◷</span>
-          <div><p>Agendadas</p><strong>{orders.filter((order) => order.status === 'Agendada').length}</strong></div>
+          <div><p>Agendadas</p><strong>{visibleOrders.filter((order) => order.status === 'Agendada').length}</strong></div>
         </article>
         <article className="summary-item">
           <span className="summary-icon summary-icon-green">✓</span>
-          <div><p>Concluídas</p><strong>{orders.filter((order) => order.status === 'Concluída').length}</strong></div>
+          <div><p>Concluídas</p><strong>{visibleOrders.filter((order) => order.status === 'Concluída').length}</strong></div>
         </article>
       </section>
 
-      {storageError && <p className="page-error" role="alert">{storageError}</p>}
+      {ordersError && <p className="page-error" role="alert">{ordersError}</p>}
       {savedMessage && <p className="order-success" role="status">{savedMessage}</p>}
 
       {formOpen && (
@@ -317,7 +269,9 @@ export function OrdensServico() {
             </tr>
           </thead>
           <tbody>
-            {filteredOrders.map((order) => (
+            {loadingOrders ? (
+              <tr><td colSpan={6} className="work-orders-empty">Carregando ordens de serviço...</td></tr>
+            ) : filteredOrders.map((order) => (
               <tr key={order.id}>
                 <td className="font-medium">{order.id}</td>
                 <td>{order.customer}</td>
@@ -338,7 +292,9 @@ export function OrdensServico() {
         </table>
       </div>
       <p className="work-order-note">
-        As ordens desta versão demonstrativa são salvas neste navegador. A API atual ainda não possui cadastro de ordens de serviço.
+        {dataSource === 'API conectada'
+          ? 'As ordens de serviço são salvas no banco de dados.'
+          : 'As ordens desta versão demonstrativa são salvas neste navegador.'}
       </p>
     </section>
   );
